@@ -1,22 +1,24 @@
-[![Code Climate](https://codeclimate.com/repos/53baacb3e30ba0381a000625/badges/b91b5586aaa1a3ca4107/gpa.png)](https://codeclimate.com/repos/53baacb3e30ba0381a000625/feed)
-[![Code Climate](https://codeclimate.com/repos/53baacb3e30ba0381a000625/badges/b91b5586aaa1a3ca4107/coverage.png)](https://codeclimate.com/repos/53baacb3e30ba0381a000625/feed)
-# Rebank Me!
-## Development Environment Setup
-The dev environment should be able to be setup in a couple of simple steps using vagrant. What this does is set up a virtual machine on your machine that the app will run in. This way it closely mimics the production environment and we can easily synchronize environments accross different users' machines.
 
-### To get up and running:
-1. Install [Vagrant] (http://www.vagrantup.com/downloads.html)
-2. Open a terminal window and cd to the 'ops' folder of this repo
-3. Type the following (you only need to do this on first run): `vagrant plugin install vagrant-vbguest`
-4. Now type `vagrant up` and witness as a new machine gets downloaded and configured. The guest box is where your code will run when you're working with it.
+# Shoulda Validator Issue
+This is a demo repo to reproduce the issue described [here](https://github.com/thoughtbot/shoulda-matchers/issues/552#issuecomment-48686578) 
+## Steps to reproduce
 
-### Once you're up and running
-When you are working like this, you now have a machine running all on its lonesome and isolated from any other stuff on your laptop. It is like running a whole new machine in a box though so it will consume disk space and RAM. You can shut it down / pause it just like a real machine. Here are some useful commands:
+### Guard / Spork interfering with rspec run on terminal
+1. Open 2 Terminal windows
+2. In one, type `rspec`
+ * Should get 2 examples, 0 failures
+3. In second window, type `guard` to start guard & spork
+4. Press `enter` to run suite
+ * Should still get 2 examples, 0 failues; 
+ * but get 2 failures "undefined method `validate_presence_of' for #<RSpec::Core::ExampleGroup::Nested_1:0x00000103552ab8>"
+5. In first window, again type `rspec`
+ * Expect tests to pass
+ * but see same error as in guard
+6. In second window, type `exit` to quit guard
+7. In first window, type `rspec`, behavior back to normal.
 
-1. `vagrant up` (re)starts the machine so you can work with the app
-
-2. `vagrant suspend` This is like stopping the machine in time. Resuming work is super fast, and the box wont consume RAM or CPU, but will take up a big chunk of disk space (about 2GB) plus whatever was in RAM
-3. `vagrant halt` This is like shutting the machine down. Takes longer to start than `suspend` but RAM isn't written to disk so it takes less space
-4. `vagrant destroy` This is like throwing the box out the window. You can always start afresh with `vagrant up` but it will have to go through that initial install which might take a few minutes...
-
-*More to follow; work in progress...*
+### Matchers not working in Guard / Spork
+1. Open a terminal window and type `guard`
+2. Press `enter` to run suite
+ * Should get 2 examples, 0 failues; 
+ * but get 2 failures "undefined method `validate_presence_of' for #<RSpec::Core::ExampleGroup::Nested_1:0x00000103552ab8>"
